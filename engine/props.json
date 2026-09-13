@@ -1,0 +1,381 @@
+{
+  "theme": "punchy_creator",
+  "title": "Ce gars a vendu la Tour Eiffel...",
+  "voiceAudioUrl": "generated_voice.mp3",
+  "musicTrackUrl": "music/suspense_dark/track_01.mp3",
+  "totalDurationInFrames": 561,
+  "fps": 30,
+  "scenes": [
+    {
+      "sceneId": 1,
+      "voiceText": "Ce gars a accidentellement vendu la Tour Eiffel deux fois de suite.",
+      "avatarVisible": true,
+      "avatarPose": "shocked_jawdrop",
+      "brollUrl": "broll/broll_eiffel.jpg",
+      "highlightWord": "vendu",
+      "sfxTrigger": "sub_bass_hit",
+      "startFrame": 0,
+      "durationInFrames": 140
+    },
+    {
+      "sceneId": 2,
+      "voiceText": "En 1925, Victor Lustig lit dans le journal que la tour rouille et coûte une fortune à réparer.",
+      "avatarVisible": false,
+      "avatarPose": "idle_neutral",
+      "brollUrl": "broll/broll_lustig.jpg",
+      "highlightWord": "1925",
+      "sfxTrigger": "paper_slide",
+      "startFrame": 140,
+      "durationInFrames": 140
+    },
+    {
+      "sceneId": 3,
+      "voiceText": "Il s'est dit : et si je la vendais à des ferrailleurs ? Oui, le type n'avait aucun respect.",
+      "avatarVisible": true,
+      "avatarPose": "laughing_joke",
+      "brollUrl": "broll/broll_francs.png",
+      "highlightWord": "aucun respect",
+      "sfxTrigger": "soft_pop",
+      "startFrame": 280,
+      "durationInFrames": 140
+    },
+    {
+      "sceneId": 4,
+      "voiceText": "Il a encaissé le gros chèque, fui à Vienne, puis est revenu recommencer. Et voilà comment...",
+      "avatarVisible": true,
+      "avatarPose": "secret_whisper",
+      "brollUrl": "broll/broll_train.jpg",
+      "highlightWord": "chèque",
+      "sfxTrigger": "whoosh",
+      "startFrame": 420,
+      "durationInFrames": 141
+    }
+  ],
+  "captions": [
+    {
+      "word": "Ce",
+      "start": 0.05,
+      "end": 0.155
+    },
+    {
+      "word": "gars",
+      "start": 0.155,
+      "end": 0.364
+    },
+    {
+      "word": "a",
+      "start": 0.364,
+      "end": 0.416
+    },
+    {
+      "word": "accidentellement",
+      "start": 0.416,
+      "end": 1.252
+    },
+    {
+      "word": "vendu",
+      "start": 1.252,
+      "end": 1.513
+    },
+    {
+      "word": "la",
+      "start": 1.513,
+      "end": 1.618
+    },
+    {
+      "word": "Tour",
+      "start": 1.618,
+      "end": 1.827
+    },
+    {
+      "word": "Eiffel",
+      "start": 1.827,
+      "end": 2.14
+    },
+    {
+      "word": "deux",
+      "start": 2.14,
+      "end": 2.349
+    },
+    {
+      "word": "fois",
+      "start": 2.349,
+      "end": 2.558
+    },
+    {
+      "word": "de",
+      "start": 2.558,
+      "end": 2.663
+    },
+    {
+      "word": "suite.",
+      "start": 2.663,
+      "end": 2.976
+    },
+    {
+      "word": "En",
+      "start": 2.976,
+      "end": 3.104
+    },
+    {
+      "word": "1925,",
+      "start": 3.104,
+      "end": 3.423
+    },
+    {
+      "word": "Victor",
+      "start": 3.423,
+      "end": 3.806
+    },
+    {
+      "word": "Lustig",
+      "start": 3.806,
+      "end": 4.189
+    },
+    {
+      "word": "lit",
+      "start": 4.189,
+      "end": 4.381
+    },
+    {
+      "word": "dans",
+      "start": 4.381,
+      "end": 4.636
+    },
+    {
+      "word": "le",
+      "start": 4.636,
+      "end": 4.764
+    },
+    {
+      "word": "journal",
+      "start": 4.764,
+      "end": 5.211
+    },
+    {
+      "word": "que",
+      "start": 5.211,
+      "end": 5.403
+    },
+    {
+      "word": "la",
+      "start": 5.403,
+      "end": 5.53
+    },
+    {
+      "word": "tour",
+      "start": 5.53,
+      "end": 5.786
+    },
+    {
+      "word": "rouille",
+      "start": 5.786,
+      "end": 6.233
+    },
+    {
+      "word": "et",
+      "start": 6.233,
+      "end": 6.36
+    },
+    {
+      "word": "coûte",
+      "start": 6.36,
+      "end": 6.68
+    },
+    {
+      "word": "une",
+      "start": 6.68,
+      "end": 6.871
+    },
+    {
+      "word": "fortune",
+      "start": 6.871,
+      "end": 7.318
+    },
+    {
+      "word": "à",
+      "start": 7.318,
+      "end": 7.382
+    },
+    {
+      "word": "réparer.",
+      "start": 7.382,
+      "end": 7.893
+    },
+    {
+      "word": "Il",
+      "start": 7.893,
+      "end": 8.023
+    },
+    {
+      "word": "s'est",
+      "start": 8.023,
+      "end": 8.348
+    },
+    {
+      "word": "dit",
+      "start": 8.348,
+      "end": 8.544
+    },
+    {
+      "word": ":",
+      "start": 8.544,
+      "end": 8.609
+    },
+    {
+      "word": "et",
+      "start": 8.609,
+      "end": 8.739
+    },
+    {
+      "word": "si",
+      "start": 8.739,
+      "end": 8.869
+    },
+    {
+      "word": "je",
+      "start": 8.869,
+      "end": 8.999
+    },
+    {
+      "word": "la",
+      "start": 8.999,
+      "end": 9.13
+    },
+    {
+      "word": "vendais",
+      "start": 9.13,
+      "end": 9.585
+    },
+    {
+      "word": "à",
+      "start": 9.585,
+      "end": 9.65
+    },
+    {
+      "word": "des",
+      "start": 9.65,
+      "end": 9.846
+    },
+    {
+      "word": "ferrailleurs",
+      "start": 9.846,
+      "end": 10.627
+    },
+    {
+      "word": "?",
+      "start": 10.627,
+      "end": 10.692
+    },
+    {
+      "word": "Oui,",
+      "start": 10.692,
+      "end": 10.989
+    },
+    {
+      "word": "le",
+      "start": 10.989,
+      "end": 11.137
+    },
+    {
+      "word": "type",
+      "start": 11.137,
+      "end": 11.434
+    },
+    {
+      "word": "n'avait",
+      "start": 11.434,
+      "end": 11.954
+    },
+    {
+      "word": "aucun",
+      "start": 11.954,
+      "end": 12.325
+    },
+    {
+      "word": "respect.",
+      "start": 12.325,
+      "end": 12.919
+    },
+    {
+      "word": "Il",
+      "start": 12.919,
+      "end": 13.046
+    },
+    {
+      "word": "a",
+      "start": 13.046,
+      "end": 13.109
+    },
+    {
+      "word": "encaissé",
+      "start": 13.109,
+      "end": 13.617
+    },
+    {
+      "word": "le",
+      "start": 13.617,
+      "end": 13.744
+    },
+    {
+      "word": "gros",
+      "start": 13.744,
+      "end": 13.998
+    },
+    {
+      "word": "chèque,",
+      "start": 13.998,
+      "end": 14.442
+    },
+    {
+      "word": "fui",
+      "start": 14.442,
+      "end": 14.632
+    },
+    {
+      "word": "à",
+      "start": 14.632,
+      "end": 14.696
+    },
+    {
+      "word": "Vienne,",
+      "start": 14.696,
+      "end": 15.14
+    },
+    {
+      "word": "puis",
+      "start": 15.14,
+      "end": 15.394
+    },
+    {
+      "word": "est",
+      "start": 15.394,
+      "end": 15.584
+    },
+    {
+      "word": "revenu",
+      "start": 15.584,
+      "end": 15.965
+    },
+    {
+      "word": "recommencer.",
+      "start": 15.965,
+      "end": 16.726
+    },
+    {
+      "word": "Et",
+      "start": 16.726,
+      "end": 16.865
+    },
+    {
+      "word": "voilà",
+      "start": 16.865,
+      "end": 17.212
+    },
+    {
+      "word": "comment...",
+      "start": 17.212,
+      "end": 17.907
+    }
+  ]
+}

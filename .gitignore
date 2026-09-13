@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+engine/node_modules/
+agent/venv/
+__pycache__/
+*.pyc
+
+# Builds and Temp
+outputs/raw_*
+engine/public/generated_voice.mp3
+engine/test_frame.png
+.env
+.DS_Store

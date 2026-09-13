@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 580" width="100%" height="100%">
+  <defs>
+    <radialGradient id="skinGrad" cx="45%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FDDFB2" />
+      <stop offset="100%" stop-color="#F3C594" />
+    </radialGradient>
+    <linearGradient id="hoodieGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#1D4ED8" />
+    </linearGradient>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- Torso & Hoodie Base -->
+  <path d="M 140 370 C 100 440, 80 520, 80 580 L 420 580 C 420 520, 400 440, 360 370 Z" fill="url(#hoodieGrad)" />
+  
+  <!-- Inner T-shirt Collar -->
+  <path d="M 215 370 Q 250 410 285 370 Z" fill="#111827" />
+  
+  <!-- Hoodie Drawstrings -->
+  <line x1="225" y1="375" x2="220" y2="460" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+  <line x1="275" y1="375" x2="280" y2="460" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="220" cy="463" r="5" fill="#E2E8F0"/>
+  <circle cx="280" cy="463" r="5" fill="#E2E8F0"/>
+
+  <!-- Neck -->
+  <rect x="220" y="300" width="60" height="85" rx="15" fill="#F3C594" />
+
+  <!-- Head Base (Human jaw and cheeks) -->
+  <path d="M 160 210 C 160 130, 340 130, 340 210 C 340 285, 305 340, 250 345 C 195 340, 160 285, 160 210 Z" fill="url(#skinGrad)" filter="url(#softShadow)"/>
+
+  <!-- Ears -->
+  <ellipse cx="156" cy="225" rx="14" ry="22" fill="#F3C594" />
+  <ellipse cx="344" cy="225" rx="14" ry="22" fill="#F3C594" />
+  <ellipse cx="156" cy="225" rx="7" ry="12" fill="#E7AB79" />
+  <ellipse cx="344" cy="225" rx="7" ry="12" fill="#E7AB79" />
+
+  <!-- Arms / Gestures (Layered above torso) -->
+  <path d="M 120 420 Q 110 500 130 550" stroke="#3B82F6" stroke-width="38" stroke-linecap="round" fill="none"/>
+           <path d="M 380 440 Q 340 350 280 310" stroke="#3B82F6" stroke-width="38" stroke-linecap="round" fill="none"/>
+           <circle cx="270" cy="310" r="24" fill="#FDDFB2"/>
+
+  <!-- Facial Features (Eyes, Mouth, Eyebrows, Nose, Cheeks) -->
+  <ellipse cx="205" cy="218" rx="15" ry="16" fill="#FFFFFF"/>
+           <ellipse cx="295" cy="218" rx="15" ry="16" fill="#FFFFFF"/>
+           <circle cx="205" cy="214" r="9" fill="#0284C7"/>
+           <circle cx="295" cy="214" r="9" fill="#0284C7"/>
+           <!-- Inquisitive eyebrows -->
+           <path d="M 185 190 Q 205 180 225 190" stroke="#261C14" stroke-width="5" stroke-linecap="round" fill="none"/>
+           <path d="M 275 195 Q 295 185 315 195" stroke="#261C14" stroke-width="5" stroke-linecap="round" fill="none"/>
+           <!-- Pouty curious mouth -->
+           <circle cx="250" cy="285" r="7" fill="#8A4A28"/>
+
+  <!-- Stylish Human Hair (Messy voluminous top + side fringe) -->
+  <path d="M 140 190 C 130 90, 240 60, 290 70 C 340 80, 370 120, 360 190 C 345 150, 310 130, 280 135 C 230 145, 190 120, 150 170 Z" fill="#261C14" />
+  <path d="M 180 130 C 230 110, 280 110, 330 130" stroke="#4A3B32" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.6"/>
+  <!-- Front locks falling over forehead -->
+  <path d="M 190 135 Q 210 175 230 150" fill="#261C14"/>
+  <path d="M 270 135 Q 260 170 290 155" fill="#261C14"/>
+</svg>
