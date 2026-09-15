@@ -1,59 +1,69 @@
-import json
-import os
 from typing import Dict, Any
 
-def generate_sample_script(topic: str = "Victor Lustig") -> Dict[str, Any]:
+def generate_sample_script(topic: str = "Frane Selak") -> Dict[str, Any]:
     """
-    Script optimisé pour la rétention TikTok / Shorts avec :
-    - Hook explosif
-    - Alternance vocale (Narrateur créateur énergique + Voix de conteur d'archives)
+    Génère un script ultra-optimisé pour la rétention TikTok / Shorts :
+    - Hook sensationnel
+    - Alternance vocale (Henri énergique créateur + Remy conteur narrateur)
+    - Mascottes Chibi Trash réactives (shocked, laughing, skeptical, hyped)
     - Vraies photographies historiques d'archives
-    - Boucle infinie seamless
+    - Boucle infinie parfaite (Seamless Loop)
     """
     return {
         "theme": "punchy_creator",
-        "title": "Ce gars a vendu la Tour Eiffel...",
+        "title": "L'homme le plus chanceux et malchanceux du monde",
+        "avatarGender": "male",
         "musicMood": "suspense_dark",
         "scenes": [
             {
                 "sceneId": 1,
                 "voice": "male_creator",
-                "voiceText": "Ce gars a accidentellement vendu la Tour Eiffel deux fois de suite.",
+                "voiceText": "Ce gars a survécu à sept accidents mortels avant de toucher le gros lot !",
                 "avatarVisible": True,
                 "avatarPose": "shocked_jawdrop",
-                "brollUrl": "broll/broll_eiffel.jpg",
-                "highlightWord": "vendu",
+                "brollUrl": "broll/broll_train_wreck.jpg",
+                "highlightWord": "sept accidents",
                 "sfxTrigger": "sub_bass_hit"
             },
             {
                 "sceneId": 2,
                 "voice": "male_narrator",
-                "voiceText": "En 1925, Victor Lustig lit dans le journal que la tour rouille et coûte une fortune à réparer.",
+                "voiceText": "En 1962, son train déraille et plonge dans une rivière glaciale. Dix-sept passagers meurent, mais lui s'en sort avec un simple bras cassé.",
                 "avatarVisible": False,
-                "avatarPose": "idle_neutral",
-                "brollUrl": "broll/broll_lustig.jpg",
-                "highlightWord": "1925",
-                "sfxTrigger": "paper_slide"
+                "avatarPose": "explaining_point",
+                "brollUrl": "broll/broll_train_wreck.jpg",
+                "highlightWord": "bras cassé",
+                "sfxTrigger": "whoosh"
             },
             {
                 "sceneId": 3,
                 "voice": "male_creator",
-                "voiceText": "Il s'est dit : et si je la vendais à des ferrailleurs ? Oui, le type n'avait aucun respect.",
+                "voiceText": "L'année suivante, une porte d'avion s'arrache en plein vol ! Il est aspiré dans le vide... et atterrit miraculeusement sur une botte de foin !",
                 "avatarVisible": True,
                 "avatarPose": "laughing_joke",
-                "brollUrl": "broll/broll_francs.png",
-                "highlightWord": "aucun respect",
+                "brollUrl": "broll/broll_plane_flight.jpg",
+                "highlightWord": "botte de foin",
                 "sfxTrigger": "soft_pop"
             },
             {
                 "sceneId": 4,
-                "voice": "male_creator",
-                "voiceText": "Il a encaissé le gros chèque, fui à Vienne, puis est revenu recommencer. Et voilà comment...",
+                "voice": "male_narrator",
+                "voiceText": "S'ensuivent deux explosions de moteur, un bus dans un ravin, et sa voiture projetée dans un gouffre de trois cents mètres !",
                 "avatarVisible": True,
-                "avatarPose": "secret_whisper",
-                "brollUrl": "broll/broll_train.jpg",
-                "highlightWord": "chèque",
-                "sfxTrigger": "whoosh"
+                "avatarPose": "skeptical_sideeye",
+                "brollUrl": "broll/broll_car_crash.jpg",
+                "highlightWord": "trois cents mètres",
+                "sfxTrigger": "paper_slide"
+            },
+            {
+                "sceneId": 5,
+                "voice": "male_creator",
+                "voiceText": "Et à 73 ans, il achète son tout premier ticket de loto et décroche un million d'euros ! Voilà pourquoi...",
+                "avatarVisible": True,
+                "avatarPose": "hyped_victory",
+                "brollUrl": "broll/broll_lottery_winner.jpg",
+                "highlightWord": "un million",
+                "sfxTrigger": "sub_bass_hit"
             }
         ]
     }

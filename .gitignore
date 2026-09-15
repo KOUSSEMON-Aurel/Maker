@@ -9,6 +9,7 @@ __pycache__/
 outputs/raw_*
 outputs/*.mp4
 outputs/*.png
+outputs/temp_voice/
 engine/public/generated_voice.mp3
 engine/test_frame.png
 .env
