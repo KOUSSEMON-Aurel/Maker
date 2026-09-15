@@ -4,12 +4,11 @@ import subprocess
 import sys
 from typing import Dict, Any
 
-# Ensure agent/src is in path
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 if CURRENT_DIR not in sys.path:
     sys.path.append(CURRENT_DIR)
 
-from voice_engine import synthesize
+from voice_engine import synthesize_multivoice_scenes
 from broll_fetcher import fetch_broll_clip
 from script_generator import generate_sample_script
 
@@ -22,42 +21,35 @@ def run_pipeline(script_data: Dict[str, Any] = None, output_filename: str = "fin
     if script_data is None:
         script_data = generate_sample_script()
 
-    print("🚀 [1/5] Préparation du script...")
+    print("🚀 [1/5] Préparation du script & configuration...")
     title = script_data.get("title", "Vidéo Maker")
     theme = script_data.get("theme", "punchy_creator")
     music_mood = script_data.get("musicMood", "suspense_dark")
     scenes = script_data.get("scenes", [])
+    fps = 30
 
-    full_text = " ".join(s["voiceText"] for s in scenes)
     voice_audio_filename = "generated_voice.mp3"
     voice_audio_path = os.path.join(ENGINE_DIR, "public", voice_audio_filename)
+    temp_voice_dir = os.path.join(MAKER_ROOT, "outputs", "temp_voice")
 
-    print(f"🎙️ [2/5] Synthèse vocale naturelle & calcul des timestamps...")
-    try:
-        captions = synthesize(full_text, voice_audio_path)
-    except Exception as e:
-        print(f"⚠️ Erreur edge-tts ({e})")
-        captions = []
+    print(f"🎙️ [2/5] Synthèse multi-voix par scène (Henri & Remy) & calcul des timestamps...")
+    voice_result = synthesize_multivoice_scenes(scenes, voice_audio_path, temp_voice_dir)
+    captions = voice_result["captions"]
+    updated_scenes = voice_result["scenes"]
+    total_audio_seconds = voice_result["totalAudioSeconds"]
 
-    fps = 30
-    if captions:
-        total_audio_seconds = captions[-1]["end"] + 0.8
-    else:
-        total_audio_seconds = 18.0
-    total_frames = max(180, int(total_audio_seconds * fps))
-
-    print(f"🎬 [3/5] Traitement des scènes & intégration des médias authentiques...")
+    print(f"🎬 [3/5] Synchronisation précise des scènes & intégration des B-rolls...")
     processed_scenes = []
     current_frame = 0
-    frames_per_scene = total_frames // max(1, len(scenes))
 
-    for i, sc in enumerate(scenes):
+    for i, sc in enumerate(updated_scenes):
         broll_url = sc.get("brollUrl", "")
         if not broll_url:
             query = sc.get("brollQuery", "")
             broll_url = fetch_broll_clip(query) if query else ""
         
-        duration = frames_per_scene if i < len(scenes) - 1 else (total_frames - current_frame)
+        audio_dur = sc.get("audioDurationSeconds", 4.0)
+        scene_frames = max(30, int(round(audio_dur * fps)))
         
         processed_scenes.append({
             "sceneId": sc.get("sceneId", i + 1),
@@ -68,15 +60,18 @@ def run_pipeline(script_data: Dict[str, Any] = None, output_filename: str = "fin
             "highlightWord": sc.get("highlightWord", ""),
             "sfxTrigger": sc.get("sfxTrigger", "soft_pop"),
             "startFrame": current_frame,
-            "durationInFrames": duration
+            "durationInFrames": scene_frames
         })
-        current_frame += duration
+        current_frame += scene_frames
+
+    total_frames = current_frame
 
     music_track = f"music/{music_mood}/track_01.mp3"
 
     props = {
         "theme": theme,
         "title": title,
+        "avatarGender": script_data.get("avatarGender", "male"),
         "voiceAudioUrl": voice_audio_filename,
         "musicTrackUrl": music_track,
         "totalDurationInFrames": total_frames,
@@ -88,19 +83,19 @@ def run_pipeline(script_data: Dict[str, Any] = None, output_filename: str = "fin
     props_path = os.path.join(ENGINE_DIR, "props.json")
     with open(props_path, "w", encoding="utf-8") as f:
         json.dump(props, f, indent=2, ensure_ascii=False)
-    print(f"📝 Props générées dans {props_path} ({len(captions)} mots horodatés)")
+    print(f"📝 Props générées ({total_frames} frames, {len(captions)} mots horodatés)")
 
     raw_output_path = os.path.join(OUTPUT_DIR, f"raw_{output_filename}")
     final_output_path = os.path.join(OUTPUT_DIR, output_filename)
 
-    print(f"🎥 [4/5] Rendu Remotion en cours ({total_frames} frames)...")
+    print(f"🎥 [4/5] Rendu Remotion 1080x1920 @ 30fps ({total_frames} frames)...")
     cmd = [
         "npx", "remotion", "render", "ShortVideo", raw_output_path,
         f"--props={props_path}"
     ]
     subprocess.run(cmd, cwd=ENGINE_DIR, check=True)
 
-    print(f"🎚️ [5/5] Normalisation sonore finale à -14 LUFS...")
+    print(f"🎚️ [5/5] Normalisation sonore finale à -14 LUFS (EBU R128)...")
     master_cmd = [
         "ffmpeg", "-y", "-i", raw_output_path,
         "-af", "loudnorm=I=-14:LRA=7:TP=-1.5",

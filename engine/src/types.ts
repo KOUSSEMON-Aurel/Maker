@@ -32,9 +32,12 @@ export interface CaptionWord {
   end: number;   // in seconds
 }
 
+export type AvatarGender = 'male' | 'female';
+
 export interface VideoProps {
   theme: ThemeName;
   title: string;
+  avatarGender?: AvatarGender;
   voiceAudioUrl: string;       // path to voice audio file
   musicTrackUrl?: string;      // path to background music
   totalDurationInFrames: number;

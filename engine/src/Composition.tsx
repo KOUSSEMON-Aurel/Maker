@@ -5,13 +5,13 @@ import { Avatar } from './components/Avatar';
 import { BrollLayer } from './components/BrollLayer';
 import { Captions } from './components/Captions';
 import { ProgressBar } from './components/ProgressBar';
-import { SocialCard } from './components/SocialCard';
 import { THEMES } from './themes';
 import { VideoProps } from './types';
 
 export const MainComposition: React.FC<VideoProps> = ({
   theme: themeKey = 'punchy_creator',
   title = 'Titre de la vidéo',
+  avatarGender = 'male',
   voiceAudioUrl = '',
   musicTrackUrl = '',
   scenes = [],
@@ -65,12 +65,7 @@ export const MainComposition: React.FC<VideoProps> = ({
         accentColor={currentTheme.accentColor}
       />
 
-      {/* 3. Floating Viral Headline Card */}
-      <SocialCard
-        title={title}
-        theme={currentTheme}
-        sceneFrame={frame}
-      />
+      {/* 3. Headline supprimé — rendu immersif documentaire sans bandeau IA */}
 
       {/* 4. Karaoke Dynamic Subtitles */}
       <Captions
@@ -82,6 +77,7 @@ export const MainComposition: React.FC<VideoProps> = ({
       {/* 5. Expressive 2D Avatar Mascot */}
       <Avatar
         pose={activeScene?.avatarPose}
+        gender={avatarGender}
         visible={activeScene?.avatarVisible}
         sceneFrame={sceneFrame}
       />

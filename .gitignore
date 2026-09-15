@@ -7,7 +7,12 @@ __pycache__/
 
 # Builds and Temp
 outputs/raw_*
+outputs/*.mp4
+outputs/*.png
 engine/public/generated_voice.mp3
 engine/test_frame.png
 .env
 .DS_Store
+
+
+engine/build

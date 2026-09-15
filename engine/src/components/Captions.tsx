@@ -13,13 +13,11 @@ export const Captions: React.FC<CaptionsProps> = ({ captions, accentColor }) => 
   const { fps } = useVideoConfig();
   const currentTime = frame / fps;
 
-  if (!captions || captions.length === 0) {
-    return null;
-  }
+  if (!captions || captions.length === 0) return null;
 
-  // Find active word
+  // Find the active word index
   const activeIndex = captions.findIndex(
-    (c) => currentTime >= c.start && currentTime <= c.end + 0.1
+    (c) => currentTime >= c.start && currentTime <= c.end + 0.12
   );
 
   const displayIndex =
@@ -33,7 +31,7 @@ export const Captions: React.FC<CaptionsProps> = ({ captions, accentColor }) => 
 
   const targetIndex = displayIndex === -1 ? captions.length - 1 : displayIndex;
 
-  // Window of 2 words for rapid TikTok/Shorts pacing
+  // Show 2-word chunk
   const windowSize = 2;
   const startIndex = Math.floor(targetIndex / windowSize) * windowSize;
   const currentChunk = captions.slice(startIndex, startIndex + windowSize);
@@ -42,54 +40,73 @@ export const Captions: React.FC<CaptionsProps> = ({ captions, accentColor }) => 
     <div
       style={{
         position: 'absolute',
-        top: '61%',
-        left: '40px',
-        right: '40px',
-        transform: 'translateY(-50%)',
+        // Place captions in the lower-middle zone, above avatar area
+        bottom: '420px',
+        left: '32px',
+        right: '32px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         flexWrap: 'wrap',
-        gap: '20px',
+        gap: '14px',
         zIndex: 60,
         pointerEvents: 'none',
       }}
     >
       {currentChunk.map((item, idx) => {
         const globalIdx = startIndex + idx;
-        const isCurrentWord = globalIdx === activeIndex;
+        const isActive = globalIdx === activeIndex;
 
         const wordStartFrame = Math.round(item.start * fps);
         const relativeFrame = Math.max(0, frame - wordStartFrame);
 
-        const wordScale = isCurrentWord
+        // Bounce scale only on the active word, subtle
+        const wordScale = isActive
           ? spring({
               frame: relativeFrame,
               fps,
-              config: { damping: 9, stiffness: 240, mass: 0.4 },
-            }) * 0.18 + 1.05
+              config: { damping: 10, stiffness: 280, mass: 0.35 },
+            }) * 0.12 + 1.0
           : 1.0;
+
+        // Active: bright accent color text, inactive: white
+        const textColor = isActive ? accentColor : '#FFFFFF';
+
+        // Multi-layer text stroke for maximum readability on any background
+        const textShadow = [
+          '3px 3px 0 #000',
+          '-3px -3px 0 #000',
+          '3px -3px 0 #000',
+          '-3px 3px 0 #000',
+          '4px 0 0 #000',
+          '-4px 0 0 #000',
+          '0 4px 0 #000',
+          '0 -4px 0 #000',
+          '0 8px 20px rgba(0,0,0,0.9)',
+        ].join(', ');
 
         return (
           <span
             key={`${item.word}-${item.start}-${globalIdx}`}
             style={{
-              fontSize: '78px',
+              fontSize: '82px',
               fontWeight: 900,
-              fontFamily: '"Montserrat", "Inter", sans-serif',
+              fontFamily: '"Montserrat", "Inter", "Arial Black", sans-serif',
               textTransform: 'uppercase',
-              letterSpacing: '-1.5px',
-              color: isCurrentWord ? '#000000' : '#FFFFFF',
-              backgroundColor: isCurrentWord ? accentColor : 'transparent',
-              padding: isCurrentWord ? '12px 28px' : '12px 8px',
-              borderRadius: isCurrentWord ? '24px' : '0',
-              transform: `scale(${wordScale})`,
-              boxShadow: isCurrentWord ? `0 0 50px ${accentColor}FF, 0 14px 32px rgba(0,0,0,0.9)` : 'none',
-              textShadow: isCurrentWord
-                ? 'none'
-                : '0 6px 20px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 1), 3px 3px 0 #000, -3px -3px 0 #000, 3px -3px 0 #000, -3px 3px 0 #000',
+              letterSpacing: '-2px',
+              lineHeight: 1.0,
+              color: textColor,
+              // No background box — color pop only on text itself
+              padding: '0 6px',
               display: 'inline-block',
-              transition: 'transform 0.05s ease',
+              transform: `scale(${wordScale})`,
+              transformOrigin: 'center bottom',
+              textShadow,
+              // Subtle glow on active word only
+              filter: isActive
+                ? `drop-shadow(0 0 18px ${accentColor}CC)`
+                : 'none',
+              transition: 'color 0.08s ease',
             }}
           >
             {item.word}

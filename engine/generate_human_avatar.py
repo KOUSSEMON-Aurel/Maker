@@ -1,254 +1,414 @@
 import os
 
-os.makedirs('/home/aurel/CODE/Maker/engine/public/avatars', exist_ok=True)
+AVATAR_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "public", "avatars")
+os.makedirs(AVATAR_DIR, exist_ok=True)
 
-# Human Character Palette
-SKIN = "#FDDFB2"          # Warm natural human skin
-SKIN_SHADOW = "#F3C594"   # Soft shadow on skin
-HAIR = "#261C14"          # Modern dark brown haircut
-HAIR_HIGHLIGHT = "#4A3B32"# Hair shine
-HOODIE = "#3B82F6"        # Electric blue stylish hoodie
-HOODIE_DARK = "#1D4ED8"   # Hoodie folds
-HOODIE_STRINGS = "#FFFFFF"# White drawstrings
-INNER_SHIRT = "#111827"   # Dark inner tee
-EYE_COLOR = "#0284C7"     # Vibrant blue eyes
+# Common palette
+C_OUTLINE = "#181B20"
+C_SKIN = "#FFE2CF"
+C_SKIN_SHADOW = "#E8BA9F"
+C_BLUSH = "#FF9EAA"
+C_HAIR = "#271E18"
+C_HAIR_HIGHLIGHT = "#4E3C32"
+C_HOODIE = "#2563EB"
+C_HOODIE_SHADOW = "#1D4ED8"
+C_HOODIE_INNER = "#1E3A8A"
+C_WHITE = "#FFFFFF"
+C_PUPIL = "#1E293B"
+C_IRIS = "#0284C7"
+C_SWEAT = "#38BDF8"
 
-def render_human(face_features, arms_features):
-    return f'''<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 580" width="100%" height="100%">
+def make_svg(pose_name: str, elements: str) -> str:
+    return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 550" width="100%" height="100%">
   <defs>
-    <radialGradient id="skinGrad" cx="45%" cy="40%" r="60%">
-      <stop offset="0%" stop-color="{SKIN}" />
-      <stop offset="100%" stop-color="{SKIN_SHADOW}" />
-    </radialGradient>
-    <linearGradient id="hoodieGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="{HOODIE}" />
-      <stop offset="100%" stop-color="{HOODIE_DARK}" />
-    </linearGradient>
-    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="8" stdDeviation="6" flood-opacity="0.25"/>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#000" flood-opacity="0.35"/>
     </filter>
+    <linearGradient id="skinGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="{C_SKIN}"/>
+      <stop offset="100%" stop-color="{C_SKIN_SHADOW}"/>
+    </linearGradient>
+    <linearGradient id="hoodieGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="{C_HOODIE}"/>
+      <stop offset="100%" stop-color="{C_HOODIE_SHADOW}"/>
+    </linearGradient>
   </defs>
 
-  <!-- Torso & Hoodie Base -->
-  <path d="M 140 370 C 100 440, 80 520, 80 580 L 420 580 C 420 520, 400 440, 360 370 Z" fill="url(#hoodieGrad)" />
-  
-  <!-- Inner T-shirt Collar -->
-  <path d="M 215 370 Q 250 410 285 370 Z" fill="{INNER_SHIRT}" />
-  
-  <!-- Hoodie Drawstrings -->
-  <line x1="225" y1="375" x2="220" y2="460" stroke="{HOODIE_STRINGS}" stroke-width="5" stroke-linecap="round"/>
-  <line x1="275" y1="375" x2="280" y2="460" stroke="{HOODIE_STRINGS}" stroke-width="5" stroke-linecap="round"/>
-  <circle cx="220" cy="463" r="5" fill="#E2E8F0"/>
-  <circle cx="280" cy="463" r="5" fill="#E2E8F0"/>
+  <g filter="url(#softShadow)">
+    {elements}
+  </g>
+</svg>"""
 
-  <!-- Neck -->
-  <rect x="220" y="300" width="60" height="85" rx="15" fill="{SKIN_SHADOW}" />
+# Base Body (Streetwear Hoodie)
+def hoodie_body(shoulder_tilt=0):
+    return f"""
+    <!-- Shoulders & Torso -->
+    <path d="M 120 420 Q 250 395 380 420 L 410 550 L 90 550 Z" 
+          fill="url(#hoodieGrad)" stroke="{C_OUTLINE}" stroke-width="4" stroke-linejoin="round"/>
+    
+    <!-- Chest / Zip folds -->
+    <path d="M 250 435 L 250 550" stroke="{C_HOODIE_SHADOW}" stroke-width="4" stroke-linecap="round"/>
+    <path d="M 170 480 Q 210 495 240 485" stroke="{C_HOODIE_SHADOW}" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <path d="M 330 480 Q 290 495 260 485" stroke="{C_HOODIE_SHADOW}" stroke-width="3" stroke-linecap="round" fill="none"/>
 
-  <!-- Head Base (Human jaw and cheeks) -->
-  <path d="M 160 210 C 160 130, 340 130, 340 210 C 340 285, 305 340, 250 345 C 195 340, 160 285, 160 210 Z" fill="url(#skinGrad)" filter="url(#softShadow)"/>
+    <!-- Hood Collar Behind Neck -->
+    <path d="M 175 350 C 145 380 160 440 250 440 C 340 440 355 380 325 350 Z" 
+          fill="{C_HOODIE_INNER}" stroke="{C_OUTLINE}" stroke-width="4"/>
 
-  <!-- Ears -->
-  <ellipse cx="156" cy="225" rx="14" ry="22" fill="{SKIN_SHADOW}" />
-  <ellipse cx="344" cy="225" rx="14" ry="22" fill="{SKIN_SHADOW}" />
-  <ellipse cx="156" cy="225" rx="7" ry="12" fill="#E7AB79" />
-  <ellipse cx="344" cy="225" rx="7" ry="12" fill="#E7AB79" />
+    <!-- White Drawstrings -->
+    <path d="M 215 425 Q 210 480 215 505" stroke="{C_WHITE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <rect x="212" y="505" width="6" height="12" rx="3" fill="#CBD5E1"/>
+    <path d="M 285 425 Q 290 480 285 505" stroke="{C_WHITE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <rect x="282" y="505" width="6" height="12" rx="3" fill="#CBD5E1"/>
+    """
 
-  <!-- Arms / Gestures (Layered above torso) -->
-  {arms_features}
+def head_base():
+    return f"""
+    <!-- Neck -->
+    <path d="M 220 330 L 220 380 Q 250 395 280 380 L 280 330 Z" fill="{C_SKIN_SHADOW}" stroke="{C_OUTLINE}" stroke-width="4"/>
 
-  <!-- Facial Features (Eyes, Mouth, Eyebrows, Nose, Cheeks) -->
-  {face_features}
+    <!-- Ears -->
+    <path d="M 162 255 C 145 255 145 295 165 295 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <path d="M 158 270 Q 152 280 160 285" stroke="{C_SKIN_SHADOW}" stroke-width="3" fill="none"/>
+    <path d="M 338 255 C 355 255 355 295 335 295 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <path d="M 342 270 Q 348 280 340 285" stroke="{C_SKIN_SHADOW}" stroke-width="3" fill="none"/>
 
-  <!-- Stylish Human Hair (Messy voluminous top + side fringe) -->
-  <path d="M 140 190 C 130 90, 240 60, 290 70 C 340 80, 370 120, 360 190 C 345 150, 310 130, 280 135 C 230 145, 190 120, 150 170 Z" fill="{HAIR}" />
-  <path d="M 180 130 C 230 110, 280 110, 330 130" stroke="{HAIR_HIGHLIGHT}" stroke-width="6" stroke-linecap="round" fill="none" opacity="0.6"/>
-  <!-- Front locks falling over forehead -->
-  <path d="M 190 135 Q 210 175 230 150" fill="{HAIR}"/>
-  <path d="M 270 135 Q 260 170 290 155" fill="{HAIR}"/>
-</svg>'''
+    <!-- Face Shape (Anime soft jaw) -->
+    <path d="M 165 240 C 165 170 335 170 335 240 C 335 310 295 355 250 355 C 205 355 165 310 165 240 Z" 
+          fill="url(#skinGrad)" stroke="{C_OUTLINE}" stroke-width="4" stroke-linejoin="round"/>
+    
+    <!-- Nose -->
+    <path d="M 248 270 L 253 277 L 247 280" stroke="{C_OUTLINE}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    """
 
-# 10 Human Expressive Poses
-poses = {
-    "idle_neutral": (
-        # Natural eyes with reflection + friendly smile
-        '''<ellipse cx="205" cy="225" rx="16" ry="18" fill="#FFFFFF"/>
-           <ellipse cx="295" cy="225" rx="16" ry="18" fill="#FFFFFF"/>
-           <circle cx="205" cy="225" r="11" fill="{eye}"/>
-           <circle cx="295" cy="225" r="11" fill="{eye}"/>
-           <circle cx="202" cy="220" r="4" fill="#FFFFFF"/>
-           <circle cx="292" cy="220" r="4" fill="#FFFFFF"/>
-           <circle cx="208" cy="228" r="2" fill="#FFFFFF"/>
-           <circle cx="298" cy="228" r="2" fill="#FFFFFF"/>
-           <!-- Eyebrows -->
-           <path d="M 185 200 Q 205 194 225 198" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <path d="M 275 198 Q 295 194 315 200" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <!-- Nose -->
-           <path d="M 248 240 Q 254 252 246 256" stroke="#DCA273" stroke-width="3" stroke-linecap="round" fill="none"/>
-           <!-- Smile -->
-           <path d="M 225 280 Q 250 300 275 280" stroke="#8A4A28" stroke-width="4" stroke-linecap="round" fill="none"/>
-           <!-- Subtle blush -->
-           <ellipse cx="185" cy="255" rx="14" ry="7" fill="#F87171" opacity="0.35"/>
-           <ellipse cx="315" cy="255" rx="14" ry="7" fill="#F87171" opacity="0.35"/>''',
-        # Arms in hoodie front pocket
-        '''<path d="M 130 400 Q 180 470 250 470 Q 320 470 370 400" stroke="{hoodie_dark}" stroke-width="44" stroke-linecap="round" fill="none"/>'''
-    ),
-    "shocked_jawdrop": (
-        # Wide open eyes + O-shaped dropped mouth + sweat drop
-        '''<ellipse cx="198" cy="220" rx="22" ry="24" fill="#FFFFFF"/>
-           <ellipse cx="302" cy="220" rx="22" ry="24" fill="#FFFFFF"/>
-           <circle cx="198" cy="220" r="13" fill="{eye}"/>
-           <circle cx="302" cy="220" r="13" fill="{eye}"/>
-           <circle cx="194" cy="215" r="5" fill="#FFFFFF"/>
-           <circle cx="298" cy="215" r="5" fill="#FFFFFF"/>
-           <!-- High raised arched eyebrows -->
-           <path d="M 175 185 Q 200 170 222 185" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <path d="M 278 185 Q 300 170 325 185" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <!-- Dropped open mouth -->
-           <ellipse cx="250" cy="292" rx="18" ry="24" fill="#4A1515"/>
-           <ellipse cx="250" cy="302" rx="12" ry="10" fill="#E11D48"/>
-           <!-- Anime sweat drop -->
-           <path d="M 335 180 C 335 170, 350 170, 350 180 C 350 190, 335 195, 335 180 Z" fill="#38BDF8" opacity="0.9"/>''',
-        # Hands on cheeks in disbelief
-        '''<path d="M 110 440 Q 120 280 155 255" stroke="{hoodie}" stroke-width="40" stroke-linecap="round" fill="none"/>
-           <circle cx="155" cy="255" r="22" fill="{skin}"/>
-           <path d="M 390 440 Q 380 280 345 255" stroke="{hoodie}" stroke-width="40" stroke-linecap="round" fill="none"/>
-           <circle cx="345" cy="255" r="22" fill="{skin}"/>'''
-    ),
-    "explaining_point": (
-        # Confident speaking expression + index finger up
-        '''<ellipse cx="205" cy="225" rx="16" ry="17" fill="#FFFFFF"/>
-           <ellipse cx="295" cy="225" rx="16" ry="17" fill="#FFFFFF"/>
-           <circle cx="205" cy="225" r="10" fill="{eye}"/>
-           <circle cx="295" cy="225" r="10" fill="{eye}"/>
-           <circle cx="202" cy="221" r="3" fill="#FFFFFF"/>
-           <circle cx="292" cy="221" r="3" fill="#FFFFFF"/>
-           <!-- Confident eyebrows -->
-           <path d="M 185 198 L 220 203" stroke="{hair}" stroke-width="5" stroke-linecap="round"/>
-           <path d="M 280 203 L 315 198" stroke="{hair}" stroke-width="5" stroke-linecap="round"/>
-           <!-- Talking mouth -->
-           <path d="M 230 280 Q 250 295 270 280 Z" fill="#6B2810"/>''',
-        # Left hand down, right arm raised pointing with finger
-        '''<path d="M 120 420 Q 110 500 130 550" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <path d="M 370 420 Q 430 330 395 210" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <!-- Hand & pointing finger -->
-           <circle cx="390" cy="200" r="20" fill="{skin}"/>
-           <rect x="384" y="160" width="12" height="42" rx="6" fill="{skin}"/>'''
-    ),
-    "laughing_joke": (
-        # Squinted XD laughing eyes + wide happy open mouth
-        '''<path d="M 185 225 L 205 215 L 225 225" stroke="{hair}" stroke-width="6" stroke-linecap="round" fill="none"/>
-           <path d="M 275 225 L 295 215 L 315 225" stroke="{hair}" stroke-width="6" stroke-linecap="round" fill="none"/>
-           <!-- Laughing curved eyebrows -->
-           <path d="M 180 190 Q 205 180 225 192" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <path d="M 275 192 Q 295 180 320 190" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <!-- Big laughing mouth with teeth & tongue -->
-           <path d="M 220 270 Q 250 325 280 270 Z" fill="#6B1A1A"/>
-           <path d="M 226 270 Q 250 280 274 270 Z" fill="#FFFFFF"/>
-           <path d="M 235 300 Q 250 290 265 300 Q 250 320 235 300 Z" fill="#F43F5E"/>
-           <!-- Big blush -->
-           <ellipse cx="180" cy="245" rx="16" ry="8" fill="#F43F5E" opacity="0.4"/>
-           <ellipse cx="320" cy="245" rx="16" ry="8" fill="#F43F5E" opacity="0.4"/>''',
-        # Holding stomach laughing
-        '''<path d="M 120 420 Q 180 490 230 460" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <circle cx="230" cy="460" r="20" fill="{skin}"/>
-           <path d="M 380 420 Q 320 490 270 460" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <circle cx="270" cy="460" r="20" fill="{skin}"/>'''
-    ),
-    "skeptical_sideeye": (
-        # One high eyebrow, pupils looking sideways, flat smirk
-        '''<ellipse cx="205" cy="225" rx="15" ry="16" fill="#FFFFFF"/>
-           <ellipse cx="295" cy="225" rx="15" ry="16" fill="#FFFFFF"/>
-           <circle cx="213" cy="225" r="9" fill="{eye}"/>
-           <circle cx="303" cy="225" r="9" fill="{eye}"/>
-           <!-- Raised left eyebrow, flat right eyebrow -->
-           <path d="M 180 185 Q 200 172 225 180" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <path d="M 275 205 L 315 205" stroke="{hair}" stroke-width="5" stroke-linecap="round"/>
-           <!-- Smug smirk to side -->
-           <path d="M 230 285 Q 260 280 275 272" stroke="#8A4A28" stroke-width="4" stroke-linecap="round" fill="none"/>''',
-        # Crossed arms
-        '''<path d="M 120 440 Q 250 510 380 440" stroke="{hoodie}" stroke-width="42" stroke-linecap="round" fill="none"/>'''
-    ),
-    "facepalm": (
-        # Closed eyes, hand covering face with embarrassment sweat
-        '''<line x1="185" y1="225" x2="225" y2="225" stroke="{hair}" stroke-width="5" stroke-linecap="round"/>
-           <!-- Drooped mouth -->
-           <path d="M 235 290 Q 250 280 265 290" stroke="#8A4A28" stroke-width="4" stroke-linecap="round" fill="none"/>
-           <ellipse cx="185" cy="255" rx="14" ry="7" fill="#F87171" opacity="0.5"/>''',
-        # Right hand pressed over face
-        '''<path d="M 120 420 Q 110 500 130 550" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <path d="M 380 440 Q 360 260 280 220" stroke="{hoodie}" stroke-width="40" stroke-linecap="round" fill="none"/>
-           <circle cx="270" cy="215" r="26" fill="{skin}"/>'''
-    ),
-    "secret_whisper": (
-        # Winking eye + leaning forward with hand near mouth
-        '''<path d="M 185 225 Q 205 212 225 225" stroke="{hair}" stroke-width="6" stroke-linecap="round" fill="none"/>
-           <ellipse cx="295" cy="225" rx="16" ry="18" fill="#FFFFFF"/>
-           <circle cx="295" cy="225" r="10" fill="{eye}"/>
-           <!-- Smirk -->
-           <path d="M 235 280 Q 255 290 275 276" stroke="#8A4A28" stroke-width="4" stroke-linecap="round" fill="none"/>''',
-        # Hand shielding mouth
-        '''<path d="M 120 420 Q 110 500 130 550" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <path d="M 380 440 Q 340 330 295 285" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <circle cx="295" cy="280" r="24" fill="{skin}"/>'''
-    ),
-    "angry_triggered": (
-        # Sharp anime angry eyebrows + clenched gritted teeth
-        '''<path d="M 180 200 L 225 215" stroke="{hair}" stroke-width="6" stroke-linecap="round"/>
-           <path d="M 320 200 L 275 215" stroke="{hair}" stroke-width="6" stroke-linecap="round"/>
-           <ellipse cx="205" cy="230" rx="14" ry="16" fill="#FFFFFF"/>
-           <ellipse cx="295" cy="230" rx="14" ry="16" fill="#FFFFFF"/>
-           <circle cx="205" cy="230" r="8" fill="#DC2626"/>
-           <circle cx="295" cy="230" r="8" fill="#DC2626"/>
-           <!-- Gritted teeth mouth -->
-           <rect x="225" y="275" width="50" height="20" rx="6" fill="#FFFFFF" stroke="#8A4A28" stroke-width="3"/>
-           <line x1="225" y1="285" x2="275" y2="285" stroke="#8A4A28" stroke-width="2"/>
-           <!-- Angry anime vein symbol -->
-           <path d="M 325 155 L 345 155 M 335 145 L 335 165" stroke="#EF4444" stroke-width="5" stroke-linecap="round"/>''',
-        # Raised clenched fists
-        '''<path d="M 120 440 Q 90 320 120 280" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <circle cx="120" cy="270" r="22" fill="{skin}"/>
-           <path d="M 380 440 Q 410 320 380 280" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <circle cx="380" cy="270" r="22" fill="{skin}"/>'''
-    ),
-    "hyped_victory": (
-        # Happy eyes + huge smile + V signs
-        '''<path d="M 185 225 Q 205 210 225 225" stroke="{hair}" stroke-width="6" stroke-linecap="round" fill="none"/>
-           <path d="M 275 225 Q 295 210 315 225" stroke="{hair}" stroke-width="6" stroke-linecap="round" fill="none"/>
-           <path d="M 220 270 Q 250 320 280 270 Z" fill="#6B1A1A"/>
-           <path d="M 226 270 Q 250 280 274 270 Z" fill="#FFFFFF"/>
-           <!-- Blush -->
-           <ellipse cx="180" cy="245" rx="14" ry="7" fill="#F43F5E" opacity="0.4"/>
-           <ellipse cx="320" cy="245" rx="14" ry="7" fill="#F43F5E" opacity="0.4"/>''',
-        # Both arms raised high
-        '''<path d="M 120 420 Q 80 280 95 190" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <circle cx="95" cy="180" r="22" fill="{skin}"/>
-           <path d="M 380 420 Q 420 280 405 190" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <circle cx="405" cy="180" r="22" fill="{skin}"/>'''
-    ),
-    "thinking_chin": (
-        # Looking up curiously + hand on chin
-        '''<ellipse cx="205" cy="218" rx="15" ry="16" fill="#FFFFFF"/>
-           <ellipse cx="295" cy="218" rx="15" ry="16" fill="#FFFFFF"/>
-           <circle cx="205" cy="214" r="9" fill="{eye}"/>
-           <circle cx="295" cy="214" r="9" fill="{eye}"/>
-           <!-- Inquisitive eyebrows -->
-           <path d="M 185 190 Q 205 180 225 190" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <path d="M 275 195 Q 295 185 315 195" stroke="{hair}" stroke-width="5" stroke-linecap="round" fill="none"/>
-           <!-- Pouty curious mouth -->
-           <circle cx="250" cy="285" r="7" fill="#8A4A28"/>''',
-        # Hand on chin
-        '''<path d="M 120 420 Q 110 500 130 550" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <path d="M 380 440 Q 340 350 280 310" stroke="{hoodie}" stroke-width="38" stroke-linecap="round" fill="none"/>
-           <circle cx="270" cy="310" r="24" fill="{skin}"/>'''
-    ),
+def hair():
+    return f"""
+    <!-- Hair Base & Dynamic Tuft Layers -->
+    <path d="M 155 240 C 145 150 200 115 250 115 C 310 115 355 150 345 240 C 355 220 358 190 340 165 C 320 140 300 130 250 130 C 190 130 170 150 155 240 Z"
+          fill="{C_HAIR}" stroke="{C_OUTLINE}" stroke-width="4" stroke-linejoin="round"/>
+    
+    <!-- Top Hair Volume & Spikes -->
+    <path d="M 160 220 C 150 160 190 110 255 110 C 320 110 355 155 342 215 C 335 170 310 130 260 130 C 200 130 175 165 160 220 Z" 
+          fill="{C_HAIR_HIGHLIGHT}"/>
+
+    <!-- Front Strands / Fringe -->
+    <path d="M 168 205 Q 185 240 205 220 Q 225 250 250 215 Q 275 250 295 218 Q 320 235 332 205 C 325 160 300 140 250 140 C 195 140 175 165 168 205 Z"
+          fill="{C_HAIR}" stroke="{C_OUTLINE}" stroke-width="3.5" stroke-linejoin="round"/>
+    
+    <!-- Accent Highlight Lock -->
+    <path d="M 215 150 Q 240 135 270 145" stroke="{C_HAIR_HIGHLIGHT}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    """
+
+# 1. SHOCKED JAW DROP
+def pose_shocked():
+    eyes = f"""
+    <!-- Shocked Wide Eyes -->
+    <ellipse cx="205" cy="245" rx="20" ry="24" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <ellipse cx="205" cy="246" rx="9" ry="12" fill="{C_IRIS}"/>
+    <circle cx="205" cy="246" r="6" fill="{C_PUPIL}"/>
+    <circle cx="202" cy="241" r="3" fill="{C_WHITE}"/>
+
+    <ellipse cx="295" cy="245" rx="20" ry="24" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <ellipse cx="295" cy="246" rx="9" ry="12" fill="{C_IRIS}"/>
+    <circle cx="295" cy="246" r="6" fill="{C_PUPIL}"/>
+    <circle cx="292" cy="241" r="3" fill="{C_WHITE}"/>
+
+    <!-- High Eyebrows -->
+    <path d="M 185 210 Q 205 198 228 210" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <path d="M 272 210 Q 295 198 315 210" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+
+    <!-- Open 'O' Mouth -->
+    <ellipse cx="250" cy="315" rx="14" ry="22" fill="#7F1D1D" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <ellipse cx="250" cy="324" rx="8" ry="7" fill="#EF4444"/>
+
+    <!-- Anime Sweat Drop -->
+    <path d="M 330 200 C 330 190 342 180 342 170 C 342 180 354 190 354 200 C 354 208 344 214 336 210 C 332 208 330 204 330 200 Z" 
+          fill="{C_SWEAT}" stroke="{C_OUTLINE}" stroke-width="2.5"/>
+
+    <!-- Hands on Cheeks -->
+    <!-- Left Hand -->
+    <g transform="translate(135, 260) rotate(-15)">
+      <path d="M 10 50 C 0 30 10 10 25 5 C 32 3 38 12 35 25 L 35 60 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <path d="M 28 5 C 38 0 48 10 42 28" stroke="{C_OUTLINE}" stroke-width="3.5" fill="none"/>
+      <!-- Sleeve cuff -->
+      <ellipse cx="22" cy="70" rx="20" ry="12" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="3.5"/>
+    </g>
+    <!-- Right Hand -->
+    <g transform="translate(325, 260) rotate(15)">
+      <path d="M 30 50 C 40 30 30 10 15 5 C 8 3 2 12 5 25 L 5 60 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <path d="M 12 5 C 2 0 -8 10 -2 28" stroke="{C_OUTLINE}" stroke-width="3.5" fill="none"/>
+      <!-- Sleeve cuff -->
+      <ellipse cx="18" cy="70" rx="20" ry="12" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="3.5"/>
+    </g>
+    """
+    return make_svg("shocked_jawdrop", hoodie_body() + head_base() + hair() + eyes)
+
+# 2. LAUGHING JOKE
+def pose_laughing():
+    face = f"""
+    <!-- Laughing Eyes (^ ^) -->
+    <path d="M 188 248 Q 208 230 226 248" stroke="{C_OUTLINE}" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M 274 248 Q 292 230 312 248" stroke="{C_OUTLINE}" stroke-width="5" stroke-linecap="round" fill="none"/>
+
+    <!-- Eyebrows -->
+    <path d="M 185 220 Q 208 212 228 222" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <path d="M 272 222 Q 292 212 315 220" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+
+    <!-- Cheerful Open Mouth with Tongue & Teeth -->
+    <path d="M 220 295 Q 250 290 280 295 C 280 330 220 330 220 295 Z" 
+          fill="#881337" stroke="{C_OUTLINE}" stroke-width="4" stroke-linejoin="round"/>
+    <!-- Teeth -->
+    <path d="M 228 295 Q 250 292 272 295 C 270 302 230 302 228 295 Z" fill="{C_WHITE}"/>
+    <!-- Tongue -->
+    <path d="M 235 315 Q 250 308 265 315 C 265 325 235 325 235 315 Z" fill="#FB7185"/>
+
+    <!-- Blush Marks -->
+    <ellipse cx="185" cy="272" rx="14" ry="7" fill="{C_BLUSH}" opacity="0.6"/>
+    <ellipse cx="315" cy="272" rx="14" ry="7" fill="{C_BLUSH}" opacity="0.6"/>
+
+    <!-- Cheerful Hand Wave / Chest -->
+    <g transform="translate(260, 360)">
+      <path d="M 0 40 Q 30 10 60 40 L 40 80 Z" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <!-- Hand -->
+      <ellipse cx="65" cy="35" rx="18" ry="14" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="3.5"/>
+    </g>
+    """
+    return make_svg("laughing_joke", hoodie_body() + head_base() + hair() + face)
+
+# 3. SECRET WHISPER (Wink & Finger to mouth)
+def pose_whisper():
+    face = f"""
+    <!-- One Winking Eye, One Alert Eye -->
+    <!-- Left Eye Open -->
+    <ellipse cx="205" cy="245" rx="17" ry="19" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <ellipse cx="205" cy="246" rx="8" ry="10" fill="{C_IRIS}"/>
+    <circle cx="205" cy="246" r="5" fill="{C_PUPIL}"/>
+    <circle cx="202" cy="242" r="2.5" fill="{C_WHITE}"/>
+    <path d="M 185 218 Q 205 208 228 218" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+
+    <!-- Right Eye Winking 😉 -->
+    <path d="M 276 248 Q 295 238 314 248" stroke="{C_OUTLINE}" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+    <path d="M 274 220 Q 295 212 314 224" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+
+    <!-- Smirk Mouth -->
+    <path d="M 235 305 Q 255 305 268 296" stroke="{C_OUTLINE}" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+    <!-- Finger on Lips (Shhh / Secret gesture) -->
+    <g transform="translate(245, 275)">
+      <!-- Index Finger pointing up to lips -->
+      <path d="M 8 30 L 8 5 C 8 0 18 0 18 5 L 18 30 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="3.5" stroke-linejoin="round"/>
+      <!-- Folded other fingers -->
+      <path d="M 18 15 C 28 15 28 32 18 32 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="3"/>
+      <path d="M 18 25 C 26 25 26 40 18 40 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="3"/>
+      <!-- Forearm & Blue Sleeve -->
+      <path d="M 5 35 L 2 95 L 35 95 L 25 35 Z" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    </g>
+    """
+    return make_svg("secret_whisper", hoodie_body() + head_base() + hair() + face)
+
+# 4. THINKING CHIN
+def pose_thinking():
+    face = f"""
+    <!-- Puzzled Look -->
+    <ellipse cx="205" cy="242" rx="16" ry="18" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="208" cy="240" r="7" fill="{C_IRIS}"/>
+    <circle cx="208" cy="240" r="4" fill="{C_PUPIL}"/>
+
+    <ellipse cx="295" cy="242" rx="16" ry="18" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="298" cy="240" r="7" fill="{C_IRIS}"/>
+    <circle cx="298" cy="240" r="4" fill="{C_PUPIL}"/>
+
+    <!-- One eyebrow raised high, other furrowed -->
+    <path d="M 185 225 Q 205 222 225 228" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <path d="M 275 212 Q 295 198 318 210" stroke="{C_OUTLINE}" stroke-width="5" stroke-linecap="round" fill="none"/>
+
+    <!-- Thoughtful Wavy Mouth -->
+    <path d="M 235 305 Q 248 300 262 305" stroke="{C_OUTLINE}" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+    <!-- Hand under Chin -->
+    <g transform="translate(230, 320)">
+      <path d="M 0 35 Q 20 15 40 35 L 35 70 L 5 70 Z" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <!-- Hand on chin -->
+      <path d="M 15 15 C 5 15 5 35 25 35 C 35 35 35 15 25 15 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="3.5"/>
+      <path d="M 20 15 L 20 5 C 20 0 28 0 28 5 L 28 15" stroke="{C_OUTLINE}" stroke-width="3.5" fill="{C_SKIN}"/>
+    </g>
+
+    <!-- Floating Thought Bulb / Sparkle -->
+    <path d="M 370 170 Q 385 170 385 155 Q 385 170 400 170 Q 385 170 385 185 Q 385 170 370 170 Z" 
+          fill="#FBBF24" stroke="{C_OUTLINE}" stroke-width="2.5"/>
+    """
+    return make_svg("thinking_chin", hoodie_body() + head_base() + hair() + face)
+
+# 5. IDLE NEUTRAL
+def pose_idle():
+    face = f"""
+    <!-- Calm Confident Eyes -->
+    <ellipse cx="205" cy="245" rx="16" ry="18" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="206" cy="245" r="7" fill="{C_IRIS}"/>
+    <circle cx="206" cy="245" r="4" fill="{C_PUPIL}"/>
+    <circle cx="203" cy="242" r="2.5" fill="{C_WHITE}"/>
+
+    <ellipse cx="295" cy="245" rx="16" ry="18" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="294" cy="245" r="7" fill="{C_IRIS}"/>
+    <circle cx="294" cy="245" r="4" fill="{C_PUPIL}"/>
+    <circle cx="291" cy="242" r="2.5" fill="{C_WHITE}"/>
+
+    <!-- Friendly Eyebrows -->
+    <path d="M 188 220 Q 208 214 228 220" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <path d="M 272 220 Q 292 214 312 220" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+
+    <!-- Subtle Friendly Smile -->
+    <path d="M 235 300 Q 250 312 265 300" stroke="{C_OUTLINE}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    """
+    return make_svg("idle_neutral", hoodie_body() + head_base() + hair() + face)
+
+# 6. EXPLAINING POINT
+def pose_explaining():
+    face = f"""
+    <!-- Attentive Focused Eyes -->
+    <ellipse cx="205" cy="245" rx="16" ry="18" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="208" cy="245" r="7" fill="{C_IRIS}"/>
+    <circle cx="208" cy="245" r="4" fill="{C_PUPIL}"/>
+    <circle cx="205" cy="242" r="2.5" fill="{C_WHITE}"/>
+
+    <ellipse cx="295" cy="245" rx="16" ry="18" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="298" cy="245" r="7" fill="{C_IRIS}"/>
+    <circle cx="298" cy="245" r="4" fill="{C_PUPIL}"/>
+    <circle cx="295" cy="242" r="2.5" fill="{C_WHITE}"/>
+
+    <path d="M 188 218 Q 208 210 228 216" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <path d="M 272 216 Q 292 210 312 218" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+
+    <!-- Explaining Mouth -->
+    <ellipse cx="250" cy="305" rx="10" ry="8" fill="#881337" stroke="{C_OUTLINE}" stroke-width="3.5"/>
+    <path d="M 243 303 Q 250 300 257 303" stroke="{C_WHITE}" stroke-width="2" fill="none"/>
+
+    <!-- Hand Pointing Up -->
+    <g transform="translate(100, 240)">
+      <path d="M 40 120 L 60 70 L 80 120 Z" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <!-- Pointing Hand -->
+      <path d="M 60 65 L 60 15 C 60 8 70 8 70 15 L 70 65 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="3.5"/>
+      <ellipse cx="65" cy="65" rx="14" ry="10" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="3"/>
+    </g>
+    """
+    return make_svg("explaining_point", hoodie_body() + head_base() + hair() + face)
+
+# 7. HYPED VICTORY
+def pose_hyped():
+    face = f"""
+    <!-- High Energy Joyful Face -->
+    <path d="M 186 245 Q 206 226 226 245" stroke="{C_OUTLINE}" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+    <path d="M 274 245 Q 294 226 314 245" stroke="{C_OUTLINE}" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+
+    <path d="M 185 214 Q 206 204 228 214" stroke="{C_OUTLINE}" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M 272 214 Q 294 204 315 214" stroke="{C_OUTLINE}" stroke-width="5" stroke-linecap="round" fill="none"/>
+
+    <path d="M 215 292 Q 250 286 285 292 C 285 340 215 340 215 292 Z" fill="#991B1B" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <path d="M 225 293 Q 250 290 275 293" stroke="{C_WHITE}" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <ellipse cx="250" cy="326" rx="18" ry="9" fill="#F87171"/>
+
+    <!-- Both Fists Raised in Air -->
+    <g transform="translate(70, 200)">
+      <path d="M 30 150 L 50 70 L 80 140 Z" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <ellipse cx="50" cy="60" rx="18" ry="16" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    </g>
+    <g transform="translate(350, 200)">
+      <path d="M 70 150 L 50 70 L 20 140 Z" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <ellipse cx="50" cy="60" rx="18" ry="16" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    </g>
+    """
+    return make_svg("hyped_victory", hoodie_body() + head_base() + hair() + face)
+
+# 8. SKEPTICAL SIDE EYE
+def pose_skeptical():
+    face = f"""
+    <!-- Side Looking Eyes -->
+    <ellipse cx="205" cy="245" rx="16" ry="16" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="196" cy="245" r="7" fill="{C_IRIS}"/>
+    <circle cx="196" cy="245" r="4" fill="{C_PUPIL}"/>
+
+    <ellipse cx="295" cy="245" rx="16" ry="16" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="286" cy="245" r="7" fill="{C_IRIS}"/>
+    <circle cx="286" cy="245" r="4" fill="{C_PUPIL}"/>
+
+    <!-- One Raised, One Down -->
+    <path d="M 185 228 L 225 224" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M 275 210 Q 295 198 318 214" stroke="{C_OUTLINE}" stroke-width="5" stroke-linecap="round" fill="none"/>
+
+    <!-- Wry Smirk -->
+    <path d="M 230 305 Q 245 306 265 298" stroke="{C_OUTLINE}" stroke-width="4" stroke-linecap="round" fill="none"/>
+    """
+    return make_svg("skeptical_sideeye", hoodie_body() + head_base() + hair() + face)
+
+# 9. ANGRY TRIGGERED
+def pose_angry():
+    face = f"""
+    <!-- Angled Angry Brows -->
+    <path d="M 185 215 L 230 230" stroke="{C_OUTLINE}" stroke-width="5.5" stroke-linecap="round"/>
+    <path d="M 315 215 L 270 230" stroke="{C_OUTLINE}" stroke-width="5.5" stroke-linecap="round"/>
+
+    <ellipse cx="205" cy="245" rx="15" ry="16" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="208" cy="245" r="6" fill="{C_IRIS}"/>
+    <circle cx="208" cy="245" r="3.5" fill="{C_PUPIL}"/>
+
+    <ellipse cx="295" cy="245" rx="15" ry="16" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+    <circle cx="292" cy="245" r="6" fill="{C_IRIS}"/>
+    <circle cx="292" cy="245" r="3.5" fill="{C_PUPIL}"/>
+
+    <!-- Clenched Teeth Mouth -->
+    <rect x="225" y="295" width="50" height="16" rx="6" fill="{C_WHITE}" stroke="{C_OUTLINE}" stroke-width="3.5"/>
+    <line x1="225" y1="303" x2="275" y2="303" stroke="{C_OUTLINE}" stroke-width="2"/>
+    <line x1="242" y1="295" x2="242" y2="311" stroke="{C_OUTLINE}" stroke-width="2"/>
+    <line x1="258" y1="295" x2="258" y2="311" stroke="{C_OUTLINE}" stroke-width="2"/>
+
+    <!-- Anime Anger Mark 💢 -->
+    <path d="M 335 160 L 355 160 M 345 150 L 345 170" stroke="#EF4444" stroke-width="4" stroke-linecap="round"/>
+    """
+    return make_svg("angry_triggered", hoodie_body() + head_base() + hair() + face)
+
+# 10. FACEPALM
+def pose_facepalm():
+    face = f"""
+    <!-- Closed Disappointed Eye on Left -->
+    <path d="M 188 245 Q 206 235 224 245" stroke="{C_OUTLINE}" stroke-width="4.5" stroke-linecap="round" fill="none"/>
+    <path d="M 185 225 L 225 220" stroke="{C_OUTLINE}" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Sigh Mouth -->
+    <path d="M 235 310 Q 250 305 265 310" stroke="{C_OUTLINE}" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+    <!-- Hand Covering Forehead/Eye on Right -->
+    <g transform="translate(250, 180)">
+      <path d="M 40 180 L 50 90 L 80 180 Z" fill="{C_HOODIE}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <!-- Palm over eye -->
+      <path d="M 20 60 C 20 30 65 30 65 60 L 55 90 L 30 90 Z" fill="{C_SKIN}" stroke="{C_OUTLINE}" stroke-width="4"/>
+      <path d="M 30 30 L 30 15 C 30 10 38 10 38 15 L 38 30" stroke="{C_OUTLINE}" stroke-width="3" fill="{C_SKIN}"/>
+      <path d="M 40 30 L 40 10 C 40 5 48 5 48 10 L 48 30" stroke="{C_OUTLINE}" stroke-width="3" fill="{C_SKIN}"/>
+      <path d="M 50 30 L 50 15 C 50 10 58 10 58 15 L 58 30" stroke="{C_OUTLINE}" stroke-width="3" fill="{C_SKIN}"/>
+    </g>
+    """
+    return make_svg("facepalm", hoodie_body() + head_base() + hair() + face)
+
+POSES = {
+    "shocked_jawdrop.svg": pose_shocked(),
+    "laughing_joke.svg": pose_laughing(),
+    "secret_whisper.svg": pose_whisper(),
+    "thinking_chin.svg": pose_thinking(),
+    "idle_neutral.svg": pose_idle(),
+    "explaining_point.svg": pose_explaining(),
+    "hyped_victory.svg": pose_hyped(),
+    "skeptical_sideeye.svg": pose_skeptical(),
+    "angry_triggered.svg": pose_angry(),
+    "facepalm.svg": pose_facepalm(),
 }
 
-for name, (face, arms) in poses.items():
-    formatted_face = face.format(eye=EYE_COLOR, hair=HAIR, skin=SKIN)
-    formatted_arms = arms.format(hoodie=HOODIE, hoodie_dark=HOODIE_DARK, skin=SKIN)
-    svg_data = render_human(formatted_face, formatted_arms)
-    file_path = f"/home/aurel/CODE/Maker/engine/public/avatars/{name}.svg"
-    with open(file_path, "w") as f:
-        f.write(svg_data)
+def generate_all():
+    print(f"🎨 Génération de {len(POSES)} poses d'avatars humains soignés dans {AVATAR_DIR}...")
+    for filename, svg_content in POSES.items():
+        filepath = os.path.join(AVATAR_DIR, filename)
+        with open(filepath, "w", encoding="utf-8") as f:
+            f.write(svg_content.strip())
+        print(f"  ✓ {filename}")
+    print("✨ Avatars générés avec succès !")
 
-print("10 Human Character Avatars successfully generated!")
+if __name__ == "__main__":
+    generate_all()

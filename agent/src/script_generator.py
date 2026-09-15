@@ -4,8 +4,11 @@ from typing import Dict, Any
 
 def generate_sample_script(topic: str = "Victor Lustig") -> Dict[str, Any]:
     """
-    Script de démonstration prêt à l'emploi avec boucle infinie,
-    humour percutant et vraies photographies historiques d'archives.
+    Script optimisé pour la rétention TikTok / Shorts avec :
+    - Hook explosif
+    - Alternance vocale (Narrateur créateur énergique + Voix de conteur d'archives)
+    - Vraies photographies historiques d'archives
+    - Boucle infinie seamless
     """
     return {
         "theme": "punchy_creator",
@@ -14,6 +17,7 @@ def generate_sample_script(topic: str = "Victor Lustig") -> Dict[str, Any]:
         "scenes": [
             {
                 "sceneId": 1,
+                "voice": "male_creator",
                 "voiceText": "Ce gars a accidentellement vendu la Tour Eiffel deux fois de suite.",
                 "avatarVisible": True,
                 "avatarPose": "shocked_jawdrop",
@@ -23,6 +27,7 @@ def generate_sample_script(topic: str = "Victor Lustig") -> Dict[str, Any]:
             },
             {
                 "sceneId": 2,
+                "voice": "male_narrator",
                 "voiceText": "En 1925, Victor Lustig lit dans le journal que la tour rouille et coûte une fortune à réparer.",
                 "avatarVisible": False,
                 "avatarPose": "idle_neutral",
@@ -32,6 +37,7 @@ def generate_sample_script(topic: str = "Victor Lustig") -> Dict[str, Any]:
             },
             {
                 "sceneId": 3,
+                "voice": "male_creator",
                 "voiceText": "Il s'est dit : et si je la vendais à des ferrailleurs ? Oui, le type n'avait aucun respect.",
                 "avatarVisible": True,
                 "avatarPose": "laughing_joke",
@@ -41,6 +47,7 @@ def generate_sample_script(topic: str = "Victor Lustig") -> Dict[str, Any]:
             },
             {
                 "sceneId": 4,
+                "voice": "male_creator",
                 "voiceText": "Il a encaissé le gros chèque, fui à Vienne, puis est revenu recommencer. Et voilà comment...",
                 "avatarVisible": True,
                 "avatarPose": "secret_whisper",

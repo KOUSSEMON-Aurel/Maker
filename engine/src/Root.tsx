@@ -6,6 +6,7 @@ import { VideoProps } from './types';
 export const defaultProps: VideoProps = {
   theme: 'punchy_creator',
   title: 'Ce gars a vendu la Tour Eiffel...',
+  avatarGender: 'male',
   voiceAudioUrl: 'sfx/paper_slide.mp3', // default fallback audio
   musicTrackUrl: 'music/suspense_dark/track_01.mp3',
   totalDurationInFrames: 360, // 12 seconds preview
