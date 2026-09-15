@@ -77,7 +77,7 @@ export const defaultProps: VideoProps = {
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Composition
+      <Composition<any, VideoProps>
         id="ShortVideo"
         component={MainComposition}
         durationInFrames={defaultProps.totalDurationInFrames}

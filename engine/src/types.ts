@@ -35,6 +35,7 @@ export interface CaptionWord {
 export type AvatarGender = 'male' | 'female';
 
 export interface VideoProps {
+  [key: string]: unknown;
   theme: ThemeName;
   title: string;
   avatarGender?: AvatarGender;

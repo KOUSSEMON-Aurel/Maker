@@ -2,6 +2,7 @@ import React from 'react';
 import { Img, Video, interpolate, staticFile } from 'remotion';
 
 interface BrollLayerProps {
+  sceneId?: number;
   brollUrl?: string;
   sceneFrame: number;
   sceneDuration: number;
