@@ -40,79 +40,73 @@ export const Captions: React.FC<CaptionsProps> = ({ captions, accentColor }) => 
     <div
       style={{
         position: 'absolute',
-        // Place captions in the lower-middle zone, above avatar area
         bottom: '420px',
-        left: '32px',
-        right: '32px',
+        left: '0',
+        right: '0',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '14px',
         zIndex: 60,
         pointerEvents: 'none',
       }}
     >
-      {currentChunk.map((item, idx) => {
-        const globalIdx = startIndex + idx;
-        const isActive = globalIdx === activeIndex;
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '28px',
+          padding: '12px 28px',
+          background: 'rgba(10, 10, 18, 0.55)',
+          backdropFilter: 'blur(12px)',
+          borderRadius: '24px',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.45)',
+        }}
+      >
+        {currentChunk.map((item, idx) => {
+          const globalIdx = startIndex + idx;
+          const isActive = globalIdx === activeIndex;
 
-        const wordStartFrame = Math.round(item.start * fps);
-        const relativeFrame = Math.max(0, frame - wordStartFrame);
+          const wordStartFrame = Math.round(item.start * fps);
+          const relativeFrame = Math.max(0, frame - wordStartFrame);
 
-        // Bounce scale only on the active word, subtle
-        const wordScale = isActive
-          ? spring({
-              frame: relativeFrame,
-              fps,
-              config: { damping: 10, stiffness: 280, mass: 0.35 },
-            }) * 0.12 + 1.0
-          : 1.0;
+          // Gentle spring pop on active word
+          const wordScale = isActive
+            ? spring({
+                frame: relativeFrame,
+                fps,
+                config: { damping: 14, stiffness: 220, mass: 0.4 },
+              }) * 0.06 + 1.0
+            : 1.0;
 
-        // Active: bright accent color text, inactive: white
-        const textColor = isActive ? accentColor : '#FFFFFF';
+          // Active: clean accent yellow, inactive: crisp bright white
+          const textColor = isActive ? accentColor : '#F3F4F6';
 
-        // Multi-layer text stroke for maximum readability on any background
-        const textShadow = [
-          '3px 3px 0 #000',
-          '-3px -3px 0 #000',
-          '3px -3px 0 #000',
-          '-3px 3px 0 #000',
-          '4px 0 0 #000',
-          '-4px 0 0 #000',
-          '0 4px 0 #000',
-          '0 -4px 0 #000',
-          '0 8px 20px rgba(0,0,0,0.9)',
-        ].join(', ');
-
-        return (
-          <span
-            key={`${item.word}-${item.start}-${globalIdx}`}
-            style={{
-              fontSize: '82px',
-              fontWeight: 900,
-              fontFamily: '"Montserrat", "Inter", "Arial Black", sans-serif',
-              textTransform: 'uppercase',
-              letterSpacing: '-2px',
-              lineHeight: 1.0,
-              color: textColor,
-              // No background box — color pop only on text itself
-              padding: '0 6px',
-              display: 'inline-block',
-              transform: `scale(${wordScale})`,
-              transformOrigin: 'center bottom',
-              textShadow,
-              // Subtle glow on active word only
-              filter: isActive
-                ? `drop-shadow(0 0 18px ${accentColor}CC)`
-                : 'none',
-              transition: 'color 0.08s ease',
-            }}
-          >
-            {item.word}
-          </span>
-        );
-      })}
+          return (
+            <span
+              key={`${item.word}-${item.start}-${globalIdx}`}
+              style={{
+                fontSize: '52px',
+                fontWeight: 800,
+                fontFamily: '"Montserrat", "Inter", -apple-system, sans-serif',
+                textTransform: 'uppercase',
+                letterSpacing: '1.5px',
+                lineHeight: 1.1,
+                color: textColor,
+                display: 'inline-block',
+                transform: `scale(${wordScale})`,
+                transformOrigin: 'center center',
+                WebkitTextStroke: isActive ? '1px rgba(0, 0, 0, 0.4)' : 'none',
+                textShadow: '0 2px 8px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(0, 0, 0, 0.6)',
+                transition: 'color 0.1s ease, transform 0.1s ease',
+              }}
+            >
+              {item.word}
+            </span>
+          );
+        })}
+      </div>
     </div>
   );
 };
