@@ -31,7 +31,7 @@ def generate_sample_script(topic: str = "Frane Selak") -> Dict[str, Any]:
                 "voiceText": "En 1962, son train déraille et plonge dans une rivière glaciale. Dix-sept passagers meurent, mais lui s'en sort avec un simple bras cassé.",
                 "avatarVisible": False,
                 "avatarPose": "explaining_point",
-                "brollUrl": "broll/broll_train_wreck.jpg",
+                "brollUrl": "broll/broll_train_moving.mp4",
                 "highlightWord": "bras cassé",
                 "sfxTrigger": "whoosh"
             },
@@ -51,7 +51,7 @@ def generate_sample_script(topic: str = "Frane Selak") -> Dict[str, Any]:
                 "voiceText": "S'ensuivent deux explosions de moteur, un bus dans un ravin, et sa voiture projetée dans un gouffre de trois cents mètres !",
                 "avatarVisible": True,
                 "avatarPose": "skeptical_sideeye",
-                "brollUrl": "broll/broll_car_crash.jpg",
+                "brollUrl": "broll/broll_cars_night.mp4",
                 "highlightWord": "trois cents mètres",
                 "sfxTrigger": "paper_slide"
             },

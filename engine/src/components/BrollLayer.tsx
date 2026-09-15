@@ -3,6 +3,7 @@ import { Img, Video, interpolate, staticFile } from 'remotion';
 
 interface BrollLayerProps {
   sceneId?: number;
+  visualFocus?: string;
   brollUrl?: string;
   sceneFrame: number;
   sceneDuration: number;
@@ -10,16 +11,16 @@ interface BrollLayerProps {
 }
 
 export const BrollLayer: React.FC<BrollLayerProps> = ({
+  visualFocus = 'fullscreen',
   brollUrl,
   sceneFrame,
   sceneDuration,
-  accentColor,
 }) => {
   const progress = Math.min(1, sceneFrame / Math.max(1, sceneDuration));
   
-  // Smooth Ken Burns zoom effect
-  const zoomScale = interpolate(progress, [0, 1], [1.0, 1.09]);
-  const bgZoom = interpolate(progress, [0, 1], [1.1, 1.2]);
+  // Smooth cinematic Ken Burns zoom effect
+  const zoomScale = interpolate(progress, [0, 1], [1.0, 1.08]);
+  const bgZoom = interpolate(progress, [0, 1], [1.1, 1.18]);
 
   const hasMedia = Boolean(brollUrl && brollUrl.trim().length > 0);
   const isVideo = hasMedia && (brollUrl!.endsWith('.mp4') || brollUrl!.endsWith('.webm'));
@@ -29,6 +30,8 @@ export const BrollLayer: React.FC<BrollLayerProps> = ({
       ? brollUrl!
       : staticFile(brollUrl!)
     : '';
+
+  const isCardMode = visualFocus === 'center_card' || visualFocus === 'newspaper_zoom';
 
   return (
     <div
@@ -40,33 +43,108 @@ export const BrollLayer: React.FC<BrollLayerProps> = ({
         backgroundColor: '#0A0B10',
       }}
     >
-      {/* 1. Full-bleed Blurred Background Layer (Cinematic Ambient Wash) */}
+      {/* 1. Fullscreen Main Media (Default YouTube / TikTok standard) */}
       {hasMedia ? (
-        <div
-          style={{
-            position: 'absolute',
-            inset: -40,
-            overflow: 'hidden',
-            filter: 'blur(30px) brightness(0.35) saturate(1.4)',
-            transform: `scale(${bgZoom})`,
-            transformOrigin: 'center center',
-          }}
-        >
-          {isVideo ? (
-            <Video
-              src={resolvedUrl}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              muted
-            />
-          ) : (
-            <Img
-              src={resolvedUrl}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            />
-          )}
-        </div>
+        isCardMode ? (
+          /* Card Mode with ambient blurred background */
+          <>
+            <div
+              style={{
+                position: 'absolute',
+                inset: -40,
+                overflow: 'hidden',
+                filter: 'blur(30px) brightness(0.35) saturate(1.4)',
+                transform: `scale(${bgZoom})`,
+                transformOrigin: 'center center',
+              }}
+            >
+              {isVideo ? (
+                <Video
+                  src={resolvedUrl}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  muted
+                />
+              ) : (
+                <Img
+                  src={resolvedUrl}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              )}
+            </div>
+
+            <div
+              style={{
+                position: 'absolute',
+                top: '16%',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '920px',
+                height: '620px',
+                borderRadius: '28px',
+                overflow: 'hidden',
+                border: '2px solid rgba(255, 255, 255, 0.18)',
+                boxShadow: '0 30px 60px rgba(0, 0, 0, 0.9)',
+                zIndex: 15,
+                backgroundColor: '#000000',
+              }}
+            >
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  transform: `scale(${zoomScale})`,
+                  transformOrigin: 'center center',
+                }}
+              >
+                {isVideo ? (
+                  <Video
+                    src={resolvedUrl}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    muted
+                  />
+                ) : (
+                  <Img
+                    src={resolvedUrl}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          /* Full-bleed Immersive Fullscreen (Clean, Sharp, Cinematic) */
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              overflow: 'hidden',
+            }}
+          >
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                transform: `scale(${zoomScale})`,
+                transformOrigin: 'center center',
+              }}
+            >
+              {isVideo ? (
+                <Video
+                  src={resolvedUrl}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  muted
+                />
+              ) : (
+                <Img
+                  src={resolvedUrl}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
+              )}
+            </div>
+          </div>
+        )
       ) : (
-        /* Rich dark nebula fallback if no media */
+        /* Dark nebula fallback if no media */
         <div
           style={{
             position: 'absolute',
@@ -74,58 +152,6 @@ export const BrollLayer: React.FC<BrollLayerProps> = ({
             background: `radial-gradient(circle at 50% 35%, #1E1B4B 0%, #0F172A 60%, #030712 100%)`,
           }}
         />
-      )}
-
-      {/* 2. Focused Sharp Centerpiece Photograph / Video (Documentary Framing) */}
-      {hasMedia && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '15%',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            width: '920px',
-            height: '620px',
-            borderRadius: '28px',
-            overflow: 'hidden',
-            border: '2px solid rgba(255, 255, 255, 0.18)',
-            boxShadow: '0 30px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(0, 0, 0, 0.5)',
-            zIndex: 15,
-            backgroundColor: '#000000',
-          }}
-        >
-          <div
-            style={{
-              width: '100%',
-              height: '100%',
-              transform: `scale(${zoomScale})`,
-              transformOrigin: 'center center',
-            }}
-          >
-            {isVideo ? (
-              <Video
-                src={resolvedUrl}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                muted
-              />
-            ) : (
-              <Img
-                src={resolvedUrl}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            )}
-          </div>
-
-          {/* Inner subtle photo vignette */}
-          <div
-            style={{
-              position: 'absolute',
-              inset: 0,
-              background: 'radial-gradient(circle at center, transparent 65%, rgba(0,0,0,0.5) 100%)',
-              pointerEvents: 'none',
-            }}
-          />
-        </div>
       )}
 
       {/* 3. Global Darkening Gradients for Legibility (Top for Header, Bottom for Captions & Avatar) */}

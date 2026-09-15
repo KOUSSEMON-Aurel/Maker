@@ -41,12 +41,21 @@ async def generate_single_audio(
     captions: List[Dict[str, Any]] = []
     word_events = [b for b in boundaries if b["type"] == "WordBoundary"]
 
+    PUNCT_CHARS = set("!?.…,:;—–-()")
+
     if word_events:
         for chunk in word_events:
             w = chunk.get("text", "").strip()
-            if w:
-                start_sec = round(chunk["offset"] / 10_000_000, 3)
-                end_sec = round((chunk["offset"] + chunk["duration"]) / 10_000_000, 3)
+            if not w:
+                continue
+            start_sec = round(chunk["offset"] / 10_000_000, 3)
+            end_sec = round((chunk["offset"] + chunk["duration"]) / 10_000_000, 3)
+            
+            # If word is purely punctuation, attach it to the previous word!
+            if all(c in PUNCT_CHARS for c in w) and captions:
+                captions[-1]["word"] += f" {w}" if w in "!?:;" else w
+                captions[-1]["end"] = max(captions[-1]["end"], end_sec)
+            else:
                 captions.append({"word": w, "start": start_sec, "end": end_sec})
     else:
         sentence_events = [b for b in boundaries if b["type"] == "SentenceBoundary"]
@@ -67,11 +76,15 @@ async def generate_single_audio(
             cur_time = s_start
             for w, weight in zip(raw_words, weights):
                 w_dur = (weight / total_weight) * s_duration
-                captions.append({
-                    "word": w,
-                    "start": round(cur_time, 3),
-                    "end": round(cur_time + w_dur, 3)
-                })
+                if all(c in PUNCT_CHARS for c in w) and captions:
+                    captions[-1]["word"] += f" {w}" if w in "!?:;" else w
+                    captions[-1]["end"] = max(captions[-1]["end"], round(cur_time + w_dur, 3))
+                else:
+                    captions.append({
+                        "word": w,
+                        "start": round(cur_time, 3),
+                        "end": round(cur_time + w_dur, 3)
+                    })
                 cur_time += w_dur
 
     return captions

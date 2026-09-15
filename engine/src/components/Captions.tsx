@@ -13,28 +13,46 @@ export const Captions: React.FC<CaptionsProps> = ({ captions, accentColor }) => 
   const { fps } = useVideoConfig();
   const currentTime = frame / fps;
 
-  if (!captions || captions.length === 0) return null;
+  // Clean captions: merge any punctuation-only word to previous word
+  const cleanCaptions = React.useMemo(() => {
+    if (!captions || captions.length === 0) return [];
+    const list: CaptionWord[] = [];
+    const punctRegex = /^[!?.…,:;—–\-()]+$/;
+    for (const item of captions) {
+      const w = item.word.trim();
+      if (!w) continue;
+      if (punctRegex.test(w) && list.length > 0) {
+        list[list.length - 1].word += (w === '?' || w === '!' || w === ':' || w === ';') ? ` ${w}` : w;
+        list[list.length - 1].end = Math.max(list[list.length - 1].end, item.end);
+      } else {
+        list.push({ ...item, word: w });
+      }
+    }
+    return list;
+  }, [captions]);
+
+  if (cleanCaptions.length === 0) return null;
 
   // Find the active word index
-  const activeIndex = captions.findIndex(
+  const activeIndex = cleanCaptions.findIndex(
     (c) => currentTime >= c.start && currentTime <= c.end + 0.12
   );
 
   const displayIndex =
     activeIndex !== -1
       ? activeIndex
-      : captions.findIndex((c) => currentTime < c.start);
+      : cleanCaptions.findIndex((c) => currentTime < c.start);
 
-  if (displayIndex === -1 && currentTime > captions[captions.length - 1].end + 0.5) {
+  if (displayIndex === -1 && currentTime > cleanCaptions[cleanCaptions.length - 1].end + 0.5) {
     return null;
   }
 
-  const targetIndex = displayIndex === -1 ? captions.length - 1 : displayIndex;
+  const targetIndex = displayIndex === -1 ? cleanCaptions.length - 1 : displayIndex;
 
   // Show 2-word chunk
   const windowSize = 2;
   const startIndex = Math.floor(targetIndex / windowSize) * windowSize;
-  const currentChunk = captions.slice(startIndex, startIndex + windowSize);
+  const currentChunk = cleanCaptions.slice(startIndex, startIndex + windowSize);
 
   return (
     <div

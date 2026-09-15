@@ -59,6 +59,7 @@ export const MainComposition: React.FC<VideoProps> = ({
       {/* 2. Media / B-Roll Layer with Centerpiece Graphic */}
       <BrollLayer
         sceneId={activeScene?.sceneId}
+        visualFocus={activeScene?.visualFocus}
         brollUrl={activeScene?.brollUrl}
         sceneFrame={sceneFrame}
         sceneDuration={sceneDuration}
